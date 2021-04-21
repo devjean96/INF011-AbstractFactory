@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
@@ -95,7 +97,11 @@ public class UtilMenu {
 			String namePlugin = UtilArquivo.getFactoryPlugin(plugins[j]);		
 		 if(namePlugin.equals(extensaoArquivo)) { 
 			 String className = factoryName.toLowerCase() + "." + factoryName;
-			 IDEFactory factory = (IDEFactory) Class.forName(className, true, ulc).newInstance();
+			 Class metaFactory = Class.forName(className, true, ulc);
+
+			 Method getInstance = metaFactory.getDeclaredMethod("getInstance");
+			 IDEFactory factory = (IDEFactory) getInstance.invoke(null);
+
 			 AppMain.createProducts(factory, file);
 			 existePlugin = true;
 		 }
